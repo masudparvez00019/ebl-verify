@@ -1,9 +1,9 @@
-import React from 'react'
+import type { Metadata } from 'next';
+import EblVerifyPortalPage from '@/app/ebl-cert-portal-flat/verify.php/page';
 
-const HomePage = () => {
-  return (
-    <div>this is  HomePage</div>
-  )
-}
+export const metadata: Metadata = {
+  title: "Document Verification | EBL Self Service",
+  description: "Verify authentic document information - Eastern Bank PLC.",
+};
 
-export default HomePage
+export default EblVerifyPortalPage;
