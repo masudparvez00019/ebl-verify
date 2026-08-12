@@ -13,6 +13,7 @@ import {
   RefreshCw,
   QrCode,
   ExternalLink,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,7 @@ import StatementFormDialog from '@/components/statements/statement-form-dialog';
 import StatementViewDialog from '@/components/statements/statement-view-dialog';
 import { StatementData } from '@/components/statements/statement-pdf-template';
 import { generateCleanPdf } from '@/lib/pdf-generator';
+import { exportStatementsToExcel, exportSingleStatementToExcel } from '@/lib/excel-export';
 
 export default function VerificationsPage() {
   const [statements, setStatements] = useState<StatementData[]>([]);
@@ -94,6 +96,30 @@ export default function VerificationsPage() {
     }
   };
 
+  const handleExportAllExcel = () => {
+    if (!statements || statements.length === 0) {
+      toast.error('No statement data available to export');
+      return;
+    }
+    try {
+      exportStatementsToExcel(statements);
+      toast.success(`Exported ${statements.length} statement records to Excel successfully!`);
+    } catch (err: any) {
+      console.error('Excel Export Error:', err);
+      toast.error(err?.message || 'Failed to export Excel file');
+    }
+  };
+
+  const handleExportSingleExcel = (st: StatementData) => {
+    try {
+      exportSingleStatementToExcel(st);
+      toast.success(`Exported ${st.accountNo} to Excel successfully!`);
+    } catch (err: any) {
+      console.error('Excel Export Error:', err);
+      toast.error(err?.message || 'Failed to export Excel file');
+    }
+  };
+
   const handleDeleteStatement = async (id?: string) => {
     if (!id) return;
     if (!confirm('Are you sure you want to delete this statement?')) return;
@@ -121,11 +147,11 @@ export default function VerificationsPage() {
             <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" /> Account Statements & Verification
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
-            Create, manage, edit, view, and generate official EBL e-statement PDFs with dynamic QR codes.
+            Create, manage, edit, view, export to Excel, and generate official EBL e-statement PDFs with dynamic QR codes.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Button
             onClick={fetchStatements}
             variant="outline"
@@ -134,6 +160,17 @@ export default function VerificationsPage() {
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </Button>
+
+          <Button
+            onClick={handleExportAllExcel}
+            variant="outline"
+            size="sm"
+            disabled={loading || statements.length === 0}
+            className="bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs h-9 rounded-xl font-medium transition-colors"
+          >
+            <FileSpreadsheet className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" /> Export to Excel
+          </Button>
+
           <Button
             onClick={handleAddStatement}
             size="sm"
@@ -156,13 +193,13 @@ export default function VerificationsPage() {
             </CardDescription>
           </div>
 
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <div className="relative w-full sm:flex-1 sm:max-w-xl md:max-w-2xl">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
             <Input
-              placeholder="Search Name, Account No, or Customer ID..."
+              placeholder="Search Customer Name, Account Number, Branch, or Customer ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-slate-50 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-xs h-9 rounded-xl"
+              className="pl-10 pr-4 bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#003876] dark:focus:border-blue-500 text-xs sm:text-sm h-10 rounded-xl transition-all shadow-2xs"
             />
           </div>
         </CardHeader>
@@ -248,7 +285,17 @@ export default function VerificationsPage() {
                           className="h-8 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
                           title="Download PDF directly"
                         >
-                          <FileDown className={`w-3.5 h-3.5 mr-1 ${downloadingId === st._id ? 'animate-bounce' : ''}`} /> Download PDF
+                          <FileDown className={`w-3.5 h-3.5 mr-1 ${downloadingId === st._id ? 'animate-bounce' : ''}`} /> PDF
+                        </Button>
+
+                        <Button
+                          onClick={() => handleExportSingleExcel(st)}
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                          title="Export statement details & transactions to Excel"
+                        >
+                          <FileSpreadsheet className="w-3.5 h-3.5 mr-1" /> Excel
                         </Button>
 
                         <Button

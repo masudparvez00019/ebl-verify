@@ -73,9 +73,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Verifications', href: '/dashboard/verifications', icon: ShieldCheck },
-    { name: 'User Management', href: '/dashboard/users', icon: Users },
-    { name: 'Audit Logs', href: '/dashboard/logs', icon: FileText },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
   return (
