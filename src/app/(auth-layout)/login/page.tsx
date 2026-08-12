@@ -13,8 +13,6 @@ import {
   EyeOff,
   ArrowRight,
   Loader2,
-  Sparkles,
-  KeyRound,
   CheckCircle2,
   LockKeyhole,
 } from 'lucide-react';
@@ -32,12 +30,6 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const fillDemoAdmin = () => {
-    setEmail('admin@eblverify.com');
-    setPassword('Admin@123456');
-    toast.info('Demo admin credentials filled!');
-  };
 
   const handleForgotPassword = () => {
     toast.info('Please contact your System Administrator to reset your admin password.', {
@@ -158,23 +150,6 @@ export default function LoginPage() {
             {/* Card Body & Form */}
             <div className="p-6 md:p-8 space-y-6">
               
-              {/* Quick Demo Autofill Pill */}
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.015 }}
-                whileTap={{ scale: 0.985 }}
-                onClick={fillDemoAdmin}
-                className="w-full text-xs py-2.5 px-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-900 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all flex items-center justify-between group shadow-2xs"
-              >
-                <span className="flex items-center gap-2 font-medium">
-                  <Sparkles className="w-4 h-4 text-[#003876] dark:text-[#F5C518] animate-spin" style={{ animationDuration: '6s' }} />
-                  Testing? Click to fill default admin credentials
-                </span>
-                <span className="font-mono text-[10px] bg-[#003876] text-white dark:bg-blue-900 dark:text-blue-100 px-2 py-0.5 rounded-md font-semibold group-hover:bg-[#002957] transition-colors">
-                  Auto Fill
-                </span>
-              </motion.button>
-
               <form onSubmit={handleLogin} className="space-y-4">
                 {/* Email Address */}
                 <div className="space-y-1.5">

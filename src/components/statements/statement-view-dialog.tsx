@@ -11,6 +11,7 @@ import {
   FileCheck,
   ZoomIn,
   ZoomOut,
+  FileSpreadsheet,
 } from 'lucide-react';
 import {
   Dialog,
@@ -21,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import StatementPdfTemplate, { StatementData } from './statement-pdf-template';
 import { generateCleanPdf } from '@/lib/pdf-generator';
+import { exportSingleStatementToExcel } from '@/lib/excel-export';
 import { getAppUrl } from '@/lib/utils';
 
 interface StatementViewDialogProps {
@@ -45,6 +47,16 @@ export default function StatementViewDialog({
   const copyQrUrl = () => {
     navigator.clipboard.writeText(qrUrl);
     toast.success('Verification QR Link copied!');
+  };
+
+  const handleExportExcel = () => {
+    try {
+      exportSingleStatementToExcel(statement);
+      toast.success('Exported statement summary & transactions to Excel!');
+    } catch (err: any) {
+      console.error('Excel export error:', err);
+      toast.error(err?.message || 'Failed to export Excel');
+    }
   };
 
   const handleSaveAsPdf = async () => {
@@ -146,6 +158,16 @@ export default function StatementViewDialog({
               className="text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Copy className="w-3.5 h-3.5 mr-1.5 text-blue-600 dark:text-blue-400" /> Copy QR URL
+            </Button>
+
+            <Button
+              type="button"
+              onClick={handleExportExcel}
+              variant="outline"
+              size="sm"
+              className="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 h-9 rounded-xl font-medium"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 mr-1.5 text-emerald-600 dark:text-emerald-400" /> Export Excel
             </Button>
 
             <Button
